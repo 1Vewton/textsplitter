@@ -1,6 +1,6 @@
-package text_splitter
+package textsplitter
 
-// The result of text splitting
+// SplitResult provides the result of splitting text
 type SplitResult struct {
 	FullText    string
 	ChunkResult string

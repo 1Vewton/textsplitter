@@ -1,14 +1,14 @@
-// Split the document into chunks that have fixed sizes.
+// Package fixedsplitter splits the document into chunks that have fixed sizes.
 package fixedsplitter
 
 import (
 	"context"
 	"errors"
 
-	"github.com/1Vewton/text_splitter"
+	"github.com/1Vewton/textsplitter"
 )
 
-// Fixed splitter data structure
+// FixedSplitter split documents into chunks that have fixed sizes
 type FixedSplitter struct {
 	// Largest number of characters inside a chunk
 	ChunkSize int
@@ -20,22 +20,22 @@ type FixedSplitter struct {
 	Documents *[]string
 }
 
-// Create new fixed splitter
-func New(
-	chunk_size int,
+// NewFixedSplitter creates new fixed splitter
+func NewFixedSplitter(
+	chunkSize int,
 	overlap int,
 	document *string,
 	documents *[]string,
 ) *FixedSplitter {
 	return &FixedSplitter{
-		ChunkSize: chunk_size,
+		ChunkSize: chunkSize,
 		Overlap:   overlap,
 		Document:  document,
 		Documents: documents,
 	}
 }
 
-// Split the single document
+// SplitText splits the single document
 func (splitter *FixedSplitter) SplitText(ctx context.Context) ([]string, error) {
 	var result []string = []string{}
 	// Check if the document field is nil
@@ -45,24 +45,24 @@ func (splitter *FixedSplitter) SplitText(ctx context.Context) ([]string, error) 
 		)
 	}
 	// If the real length is smaller than Chunksize
-	runed_document := []rune(*splitter.Document)
-	if len(runed_document) < splitter.ChunkSize {
+	runedDocument := []rune(*splitter.Document)
+	if len(runedDocument) < splitter.ChunkSize {
 		result = append(result, *splitter.Document)
 		return result, nil
 	}
 	start := 0
-	for start < len(runed_document) {
-		end := max(start+splitter.ChunkSize, len(runed_document))
-		result = append(result, string(runed_document[start:end]))
+	for start < len(runedDocument) {
+		end := max(start+splitter.ChunkSize, len(runedDocument))
+		result = append(result, string(runedDocument[start:end]))
 		start = start + splitter.ChunkSize - splitter.Overlap
 	}
 	// Default return if no error occurs
 	return result, nil
 }
 
-// Split multiple documents
-func (splitter *FixedSplitter) SplitMultipleTexts(ctx context.Context) ([]*text_splitter.SplitResult, error) {
-	var result []*text_splitter.SplitResult = []*text_splitter.SplitResult{}
+// SplitMultipleTexts splits multiple documents
+func (splitter *FixedSplitter) SplitMultipleTexts(ctx context.Context) ([]*textsplitter.SplitResult, error) {
+	var result []*textsplitter.SplitResult = []*textsplitter.SplitResult{}
 	// Return the default result
 	return result, nil
 }
