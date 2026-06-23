@@ -1,5 +1,10 @@
+version: 2
+
 builds:
   - skip: true
+
+gomod:
+  proxy: true
 
 release:
   github:
