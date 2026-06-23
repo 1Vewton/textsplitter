@@ -32,7 +32,7 @@ func NewFixedSplitter(
 	}
 }
 
-// SplitText splits the single document
+// SplitText splits the single document using FixedSplitter method
 func (splitter *FixedSplitter) SplitText(
 	ctx context.Context,
 	document string,
@@ -57,7 +57,7 @@ func (splitter *FixedSplitter) SplitText(
 	return result, nil
 }
 
-// SplitMultipleTexts splits multiple documents
+// SplitMultipleTexts splits multiple documents using FixedSplitter method
 func (splitter *FixedSplitter) SplitMultipleTexts(
 	ctx context.Context,
 	documents []string,

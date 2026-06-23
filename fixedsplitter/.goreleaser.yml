@@ -1,0 +1,7 @@
+builds:
+  - skip: true
+
+release:
+  github:
+    owner: 1Vewton
+    name: textsplitter
