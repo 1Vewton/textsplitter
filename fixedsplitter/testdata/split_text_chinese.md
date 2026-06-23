@@ -1,0 +1,5 @@
+Go语言的Channel是goroutine之间通信的桥梁。Channel分为有缓冲和无缓冲两种。
+无缓冲Channel在发送和接收时都会阻塞，直到对端准备好。这种同步特性使得无缓冲Channel非常适合做goroutine之间的握手信号。
+有缓冲Channel在缓冲区满之前不会阻塞发送操作。你可以把它想象成一个固定大小的队列，生产者往里放数据，消费者从里取数据。
+使用select语句可以同时监听多个Channel的读写事件，配合default分支还能实现非阻塞的Channel操作。
+当所有Channel都没有就绪时，select会随机选择一个可用的case执行。
