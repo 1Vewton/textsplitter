@@ -19,7 +19,7 @@ func DotProduct(
 	return result, nil
 }
 
-// CosineSimulairty calculates the cosine simularity of two vectors
+// CosineSimularity calculates the cosine simularity of two vectors
 func CosineSimularity(
 	vector1 []float64,
 	vector2 []float64,
