@@ -1,6 +1,7 @@
 package vector
 
 import (
+	"math"
 	"testing"
 )
 
@@ -23,5 +24,18 @@ func TestDotProduct(t *testing.T) {
 	}
 	if result != 14.0 {
 		t.Errorf("The result calculated is not correct")
+	}
+}
+
+// Test the euclidean norm calculation
+func TestEuclideanNorm(t *testing.T) {
+	vector1 := []float64{1.0, 2.0, 3.0}
+	result := EuclideanNorm(vector1)
+	if result != math.Sqrt(14) {
+		t.Errorf(
+			"Expected %f, got %f",
+			math.Sqrt(14),
+			result,
+		)
 	}
 }

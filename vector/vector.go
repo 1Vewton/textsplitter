@@ -2,6 +2,7 @@ package vector
 
 import (
 	"errors"
+	"math"
 )
 
 // DotProduct calculates the dot product of two vectors
@@ -17,6 +18,17 @@ func DotProduct(
 		result += (vector1[i] * vector2[i])
 	}
 	return result, nil
+}
+
+// EuclideanNorm calculates the euclidean norm of a vector
+func EuclideanNorm(
+	vector []float64,
+) float64 {
+	var result float64 = 0.0
+	for i := 0; i < len(vector); i++ {
+		result += (vector[i] * vector[i])
+	}
+	return math.Sqrt(result)
 }
 
 // CosineSimularity calculates the cosine simularity of two vectors
