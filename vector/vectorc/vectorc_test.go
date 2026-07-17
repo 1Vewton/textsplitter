@@ -13,3 +13,15 @@ func TestDotProductLengthChecking(t *testing.T) {
 		t.Fatal("This function ought to through an error")
 	}
 }
+
+// Test the result of dot product
+func TestDotProduct(t *testing.T) {
+	vector1 := []float64{1.0, 2.0, 3.0, 4.0}
+	result, err := DotProduct(vector1, vector1)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if result != 30.0 {
+		t.Errorf("Expected 30.0, got %f", result)
+	}
+}

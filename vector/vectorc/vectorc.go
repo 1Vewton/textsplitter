@@ -17,7 +17,7 @@ func DotProduct(
 		return 0.0, errors.New("The length of the vectors are not the same")
 	}
 	out := make([]float64, len(vector1))
-	C.add_avx2_double(
+	C.mult_avx2_double(
 		(*C.double)(unsafe.Pointer(&vector1[0])),
 		(*C.double)(unsafe.Pointer(&vector2[0])),
 		(*C.double)(unsafe.Pointer(&out[0])),
