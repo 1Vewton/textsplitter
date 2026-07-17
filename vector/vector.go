@@ -35,6 +35,19 @@ func EuclideanNorm(
 func CosineSimularity(
 	vector1 []float64,
 	vector2 []float64,
-) float64 {
-	return 0.0
+) (float64, error) {
+	dotProductResult, err := DotProduct(
+		vector1,
+		vector2,
+	)
+	if err != nil {
+		return 0.0, err
+	}
+	under := EuclideanNorm(vector1) * EuclideanNorm(vector2)
+	if under == 0.0 {
+		return 0.0, errors.New(
+			"The result of multiplying the euclidean norm of two vectors cannot be 0",
+		)
+	}
+	return dotProductResult / under, nil
 }
