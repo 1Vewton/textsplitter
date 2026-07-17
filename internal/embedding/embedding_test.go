@@ -40,6 +40,9 @@ func TestEmbedding(t *testing.T) {
 		"text-embedding-ada-002",
 		3,
 	)
+	if err != nil {
+		t.Error(err.Error())
+	}
 	if result[0] != 0.0023064255 &&
 		result[1] != -0.009327292 &&
 		result[2] != -0.0028842222 {
