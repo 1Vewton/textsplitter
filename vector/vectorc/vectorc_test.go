@@ -3,6 +3,8 @@ package vectorc
 import (
 	"math"
 	"testing"
+
+	"github.com/1Vewton/textsplitter/vector"
 )
 
 // Test the length checking of dot product function
@@ -68,5 +70,16 @@ func TestCosineSimilarity(t *testing.T) {
 	}
 	if result != -1.0 {
 		t.Errorf("Expected -1.0, got %f", result)
+	}
+}
+
+// Test CVectorOperator
+func TestVectorCOperator(
+	t *testing.T,
+) {
+	var newOperator interface{} = NewCVectorOperator()
+	_, ok := newOperator.(vector.Vector)
+	if !ok {
+		t.Errorf("VectorGoOperator does not implement Vector")
 	}
 }
