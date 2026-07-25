@@ -6,6 +6,7 @@ import (
 
 	"github.com/1Vewton/textsplitter/internal/embedding"
 	"github.com/1Vewton/textsplitter/recursivesplitter"
+	"github.com/1Vewton/textsplitter/vector"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
 )
@@ -18,6 +19,7 @@ type SemanticSplitter struct {
 	EmbeddingClient    openai.Client
 	EmbeddingModel     string
 	EmbeddingDimension int
+	VectorOperator     *vector.Vector
 }
 
 // NewSemanticSplitter creates a new SemanticSplitter
@@ -29,6 +31,7 @@ func NewSemanticSplitter(
 	baseURL string,
 	embeddingModel string,
 	dimension int,
+	vectorOperator *vector.Vector,
 ) *SemanticSplitter {
 	if subSplitter.ChunkSize > chunkSize {
 		fmt.Println(
@@ -45,10 +48,11 @@ func NewSemanticSplitter(
 		),
 		EmbeddingModel:     embeddingModel,
 		EmbeddingDimension: dimension,
+		VectorOperator:     vectorOperator,
 	}
 }
 
-// embed embeds aa piece of text
+// embed embeds a piece of text
 func (splitter *SemanticSplitter) embed(
 	ctx context.Context,
 	text string,
@@ -60,4 +64,23 @@ func (splitter *SemanticSplitter) embed(
 		splitter.EmbeddingModel,
 		splitter.EmbeddingDimension,
 	)
+}
+
+// SplitText splits a single text
+func (splitter *SemanticSplitter) SplitText(
+	ctx context.Context,
+	document string,
+) (
+	[]string,
+	error,
+) {
+	var result []string = []string{}
+	_, errSplit := splitter.SubSplitter.SplitText(
+		ctx,
+		document,
+	)
+	if errSplit != nil {
+		return nil, errSplit
+	}
+	return result, nil
 }
