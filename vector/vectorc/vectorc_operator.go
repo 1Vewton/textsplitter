@@ -1,6 +1,6 @@
 package vectorc
 
-// VectorCOperator defines the operator for carrying out vector calculation using C
+// CVectorOperator defines the operator for carrying out vector calculation using C
 type CVectorOperator struct {
 }
 
@@ -9,7 +9,7 @@ func NewCVectorOperator() *CVectorOperator {
 	return &CVectorOperator{}
 }
 
-// CosineSimularity carries out cosine simularity calculation
+// CosineSimilarity carries out cosine simularity calculation
 func (operator *CVectorOperator) CosineSimilarity(
 	vector1 []float64,
 	vector2 []float64,

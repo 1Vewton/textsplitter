@@ -9,7 +9,7 @@ func NewGoVectorOperator() *GoVectorOperator {
 	return &GoVectorOperator{}
 }
 
-// CosineSimularity calculates the cosine simularity of two vectors
+// CosineSimilarity calculates the cosine simularity of two vectors
 func (operator *GoVectorOperator) CosineSimilarity(
 	vector1 []float64,
 	vector2 []float64,
