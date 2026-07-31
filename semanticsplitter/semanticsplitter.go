@@ -2,6 +2,7 @@ package semanticsplitter
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/1Vewton/textsplitter/internal/embedding"
@@ -19,7 +20,8 @@ type SemanticSplitter struct {
 	EmbeddingClient    openai.Client
 	EmbeddingModel     string
 	EmbeddingDimension int
-	VectorOperator     *vector.Vector
+	VectorOperator     vector.Vector
+	Threshold          float64
 }
 
 // NewSemanticSplitter creates a new SemanticSplitter
@@ -31,7 +33,8 @@ func NewSemanticSplitter(
 	baseURL string,
 	embeddingModel string,
 	dimension int,
-	vectorOperator *vector.Vector,
+	vectorOperator vector.Vector,
+	Threshold float64,
 ) *SemanticSplitter {
 	if subSplitter.ChunkSize > chunkSize {
 		fmt.Println(
@@ -49,17 +52,18 @@ func NewSemanticSplitter(
 		EmbeddingModel:     embeddingModel,
 		EmbeddingDimension: dimension,
 		VectorOperator:     vectorOperator,
+		Threshold:          Threshold,
 	}
 }
 
 // embed embeds a piece of text
 func (splitter *SemanticSplitter) embed(
 	ctx context.Context,
-	text string,
-) ([]float64, error) {
-	return embedding.Embed(
+	texts []string,
+) (*embedding.EmbedResult, error) {
+	return embedding.EmbedAll(
 		ctx,
-		text,
+		texts,
 		splitter.EmbeddingClient,
 		splitter.EmbeddingModel,
 		splitter.EmbeddingDimension,
@@ -75,12 +79,63 @@ func (splitter *SemanticSplitter) SplitText(
 	error,
 ) {
 	var result []string = []string{}
-	_, errSplit := splitter.SubSplitter.SplitText(
+	// Split into sub chunks
+	splitResult, errSplit := splitter.SubSplitter.SplitText(
 		ctx,
 		document,
 	)
 	if errSplit != nil {
 		return nil, errSplit
+	}
+	if len(splitResult) < 1 {
+		return nil, errors.New("The splitResult is empty")
+	}
+	// Embed the sub chunks
+	embedResult, errEmbed := splitter.embed(
+		ctx,
+		splitResult,
+	)
+	if errEmbed != nil {
+		return nil, errEmbed
+	}
+	// Start embedding
+	tmpChunk := splitResult[0]
+	for i := 1; i < len(splitResult); i++ {
+		// Embed and similarity calculation
+		result1, exists1 := embedResult.Read(i - 1)
+		if !exists1 {
+			return nil, fmt.Errorf(
+				"Embed result %d does not exists",
+				i-1,
+			)
+		}
+		result2, exists2 := embedResult.Read(i)
+		if !exists2 {
+			return nil, fmt.Errorf(
+				"Embed result %d does not exists",
+				i,
+			)
+		}
+		similarity, errCalc := splitter.VectorOperator.CosineSimilarity(
+			result1,
+			result2,
+		)
+		if errCalc != nil {
+			return nil, errCalc
+		}
+		// Process
+		chunkedTmpChunk := []rune(tmpChunk)
+		chunkedDocument2 := []rune(splitResult[i])
+		if similarity > splitter.Threshold &&
+			len(chunkedDocument2)+len(chunkedTmpChunk) < splitter.ChunkSize {
+			tmpChunk += splitResult[i]
+		} else {
+			result = append(result, tmpChunk)
+			tmpChunk = splitResult[i]
+		}
+	}
+	if tmpChunk != "" {
+		result = append(result, tmpChunk)
 	}
 	return result, nil
 }

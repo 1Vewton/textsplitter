@@ -14,5 +14,5 @@ func (operator *CVectorOperator) CosineSimularity(
 	vector1 []float64,
 	vector2 []float64,
 ) (float64, error) {
-	return CosineSimularity(vector1, vector2)
+	return CosineSimilarity(vector1, vector2)
 }

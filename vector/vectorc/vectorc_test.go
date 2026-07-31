@@ -46,7 +46,7 @@ func TestEuclideanNorm(t *testing.T) {
 func TestCosineSimilarity(t *testing.T) {
 	vector1 := []float64{1.0, 2.0, 3.0}
 	vector2 := []float64{1.0, 2.0, 3.0}
-	result, err := CosineSimularity(vector1, vector2)
+	result, err := CosineSimilarity(vector1, vector2)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -55,7 +55,7 @@ func TestCosineSimilarity(t *testing.T) {
 	}
 	vector3 := []float64{1.0, 0.0, 0.0}
 	vector4 := []float64{0.0, 1.0, 0.0}
-	result, err = CosineSimularity(vector3, vector4)
+	result, err = CosineSimilarity(vector3, vector4)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -64,7 +64,7 @@ func TestCosineSimilarity(t *testing.T) {
 	}
 	vector5 := []float64{1.0, 2.0, 3.0}
 	vector6 := []float64{-1.0, -2.0, -3.0}
-	result, err = CosineSimularity(vector5, vector6)
+	result, err = CosineSimilarity(vector5, vector6)
 	if err != nil {
 		t.Error(err.Error())
 	}

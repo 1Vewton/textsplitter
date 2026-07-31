@@ -26,3 +26,13 @@ func (result *EmbedResult) Set(
 	defer result.Unlock()
 	result.m[key] = value
 }
+
+// Read reads the value for key and see if it exists
+func (result *EmbedResult) Read(
+	key int,
+) ([]float64, bool) {
+	result.RLock()
+	defer result.RUnlock()
+	value, exists := result.m[key]
+	return value, exists
+}

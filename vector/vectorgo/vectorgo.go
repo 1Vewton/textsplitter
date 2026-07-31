@@ -31,8 +31,8 @@ func EuclideanNorm(
 	return math.Sqrt(result)
 }
 
-// CosineSimularity calculates the cosine simularity of two vectors
-func CosineSimularity(
+// CosineSimilarity calculates the cosine simularity of two vectors
+func CosineSimilarity(
 	vector1 []float64,
 	vector2 []float64,
 ) (float64, error) {
