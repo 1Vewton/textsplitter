@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/1Vewton/textsplitter"
 	"github.com/1Vewton/textsplitter/internal/embedding"
 	"github.com/1Vewton/textsplitter/recursivesplitter"
 	"github.com/1Vewton/textsplitter/vector"
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
+	"golang.org/x/sync/errgroup"
 )
 
 // SemanticSplitter splits the text according to the cosine similarity of the meaning of two chunks
@@ -137,5 +139,64 @@ func (splitter *SemanticSplitter) SplitText(
 	if tmpChunk != "" {
 		result = append(result, tmpChunk)
 	}
+	return result, nil
+}
+
+// SplitMultipleTexts splits multiple documents using SemanticSplitter method
+func (splitter *SemanticSplitter) SplitMultipleTexts(
+	ctx context.Context,
+	documents []string,
+) (
+	[]*textsplitter.SplitResult,
+	error,
+) {
+	var result []*textsplitter.SplitResult = []*textsplitter.SplitResult{}
+	resultChannel := make(
+		chan *textsplitter.TempSplitResult,
+		len(documents)*2,
+	)
+	// Executing the error group that split each document in documents
+	group, ctx := errgroup.WithContext(ctx)
+	for _, fullText := range documents {
+		fullTextTmp := fullText
+		group.Go(
+			func() error {
+				result, err := splitter.SplitText(
+					ctx,
+					fullTextTmp,
+				)
+				if err == nil {
+					tmpSplitResult := &textsplitter.TempSplitResult{
+						FullText:    fullTextTmp,
+						ChunkResult: result,
+					}
+					select {
+					case resultChannel <- tmpSplitResult:
+					default:
+						return errors.New(
+							"There is a problem with length of resultChannel",
+						)
+					}
+				}
+				return err
+			},
+		)
+	}
+	if err := group.Wait(); err != nil {
+		return result, err
+	}
+	// The channel has to be closed to process data
+	close(resultChannel)
+	// Process return data
+	for chunkResult := range resultChannel {
+		for _, chunk := range chunkResult.ChunkResult {
+			tmpResult := &textsplitter.SplitResult{
+				FullText:    chunkResult.FullText,
+				ChunkResult: chunk,
+			}
+			result = append(result, tmpResult)
+		}
+	}
+	// Return the default result
 	return result, nil
 }

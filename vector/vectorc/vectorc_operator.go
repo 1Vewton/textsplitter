@@ -10,7 +10,7 @@ func NewCVectorOperator() *CVectorOperator {
 }
 
 // CosineSimularity carries out cosine simularity calculation
-func (operator *CVectorOperator) CosineSimularity(
+func (operator *CVectorOperator) CosineSimilarity(
 	vector1 []float64,
 	vector2 []float64,
 ) (float64, error) {
