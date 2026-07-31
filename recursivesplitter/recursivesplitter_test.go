@@ -13,12 +13,12 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// Test whether the FixedSplitter implements TextSplitter
+// Test whether the RecursiveSplitter implements TextSplitter
 func TestInterface(t *testing.T) {
 	var splitter interface{} = &RecursiveSplitter{}
 	_, ok := splitter.(textsplitter.TextSplitter)
 	if !ok {
-		t.Errorf("FixedSplitter does not implements TextSplitter")
+		t.Errorf("RecursiveSplitter does not implements TextSplitter")
 	}
 }
 
